@@ -7,6 +7,19 @@ const descriptionPhrases = [
   'Sed sed nisi sed augue convallis suscipit in sed felis.', 'Aliquam erat volutpat.', 'Nunc fermentum tortor ac porta dapibus.', 'In rutrum ac purus sit amet tempus.'
 ];
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future'
+};
+
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer'
+};
+
 const namesOfPlaces = [
   'Chamonix', 'Amsterdam', 'Geneva', 'Paris', 'Dubai', 'Istanbul'
 ];
@@ -184,6 +197,7 @@ const offersByType = [
   },
 ];
 
+
 const getOffersByType = (type) => offersByType.find((currentTypeOffers) => currentTypeOffers.type === type).offers;
 
-export { typesPoint, descriptionPhrases, namesOfPlaces, fromToDates, getOffersByType, offersByType};
+export { typesPoint, descriptionPhrases, namesOfPlaces, fromToDates, getOffersByType, offersByType, FilterType, SortType};
