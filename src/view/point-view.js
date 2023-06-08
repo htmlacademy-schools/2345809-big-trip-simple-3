@@ -5,7 +5,7 @@ import { getOfferById } from '../mock/offers.js';
 
 function createOffersTemplate(offersIDs, type) {
   return offersIDs.map((offerID) => {
-    const offer = getOfferById(offerID, type);
+    const offer = getOfferById(type, offerID);
     return `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
          &plus;&euro;&nbsp;
