@@ -55,6 +55,10 @@ export default class BoardPresenter {
     this.#points.forEach((point) => this.#renderPoint(point));
   }
 
+  #renderHandleModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       pointList: this.#pointsList.element,
@@ -66,10 +70,6 @@ export default class BoardPresenter {
     pointPresenter.init(point, this.#destinations, this.#offers);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
-
-  #renderHandleModeChange = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.resetView());
-  };
 
   #renderBoard() {
     if (this.#points.length === 0) {
