@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 
 const EVENT_DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'H:mm';
+const TIME_FORMAT = 'HH:mm';
 const FORM_DATE_FORMAT = 'DD/MM/YY';
-const BASIC_DATE_FORMAT = 'DD/MM/YY H:mm';
+const BASIC_DATE_FORMAT = 'DD/MM/YY HH:mm';
 
 const getItemFromItemsById = (items, id) => (items.find((item) => item.id === id));
 
@@ -16,6 +16,8 @@ const getRandomId = () => Math.floor(Math.random() * 100) + 1;
 const isTripDateBeforeToday = (date) => dayjs(date).isBefore(dayjs(), 'D') || dayjs(date).isSame(dayjs(), 'D');
 
 const changeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
+
+const updatePoint = (items, update) => items.map((item) => item.id === update.id ? update : item);
 
 const getRandomSliceFromItems = (items) => {
   const n = Math.floor(Math.random() * (items.length + 1));
@@ -38,4 +40,4 @@ const convertToBasicime = (date) => dayjs(date).format(BASIC_DATE_FORMAT);
 const capitalizeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
 const convertToFormDate = (date) => dayjs(date).format(FORM_DATE_FORMAT);
 
-export {getRandomItemFromItems, getRandomPrice, getRandomId, convertToEventDateTime, convertToEventDate, convertToDateTime, convertToTime, capitalizeType, convertToFormDate, createIDgenerator, getRandomSliceFromItems, getItemFromItemsById, convertToBasicime, isEscapeKey, changeType, isTripDateBeforeToday};
+export {getRandomItemFromItems, getRandomPrice, getRandomId, convertToEventDateTime, convertToEventDate, convertToDateTime, convertToTime, capitalizeType, convertToFormDate, createIDgenerator, getRandomSliceFromItems, getItemFromItemsById, convertToBasicime, isEscapeKey, changeType, isTripDateBeforeToday, updatePoint};
