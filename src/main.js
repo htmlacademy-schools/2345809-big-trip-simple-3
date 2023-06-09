@@ -1,28 +1,54 @@
-import FilterView from './view/filter-view.js';
-import {render} from './framework/render';
-import {generateFilter} from './mock/filter';
 import BoardPresenter from './presenter/board-presenter.js';
 import TripPointModel from './model/trip-model.js';
 import { mockInit, tripPoints } from './mock/point.js';
+import {render} from './framework/render';
 import ModelOffers from './model/offer-model';
 import ModelDestinations from './model/destin-model';
 import {offersByType} from './mock/const';
 import {destinations} from './mock/destin';
+import ModelFilters from './model/filter-model.js';
+import FilterPresenter from './presenter/filter-presenter';
+import NewPointButtonView from './view/new-button-view.js';
+
 const pageContainer = document.querySelector('.trip-events');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
-
-const filters = generateFilter();
+const placeForButton = document.querySelector('.trip-main');
 
 mockInit(5, 10);
+
 const tripPointsModel = new TripPointModel(tripPoints);
 const modelOffers = new ModelOffers(offersByType);
 const modelDestinations = new ModelDestinations(destinations);
+const modelFilter = new ModelFilters();
 const boardPresenter = new BoardPresenter({
   boardContainer: pageContainer,
   tripPointsModel: tripPointsModel,
   modelOffers: modelOffers,
-  modelDestinations: modelDestinations
+  modelDestinations: modelDestinations,
+  modelFilter,
+  onNewPointDestroy: handleNewTaskFormClose
 });
-render(new FilterView(filters), siteFilterElement);
+const filterPresenter = new FilterPresenter({
+  filterContainer: siteFilterElement,
+  modelFilter,
+  tripPointsModel
+});
+
+const newPointButtonComponent = new NewPointButtonView({
+  onClick: handleNewTaskButtonClick
+});
+
+function handleNewTaskFormClose() {
+  newPointButtonComponent.element.disabled = false;
+}
+
+function handleNewTaskButtonClick() {
+  boardPresenter.createPoint();
+  newPointButtonComponent.element.disabled = true;
+}
+
+render(newPointButtonComponent, placeForButton);
+
+filterPresenter.init();
 
 boardPresenter.init();
