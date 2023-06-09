@@ -12,7 +12,7 @@ const pageContainer = document.querySelector('.trip-events');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const placeForButton = document.querySelector('.trip-main');
 
-const AUTHORIZATION = 'Basic asdfasdf1121';
+const AUTHORIZATION = 'Basic afgggssddgsdf1121';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
