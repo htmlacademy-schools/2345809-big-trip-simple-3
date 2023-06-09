@@ -1,37 +1,39 @@
 import BoardPresenter from './presenter/board-presenter.js';
 import TripPointModel from './model/trip-model.js';
-import { mockInit, tripPoints } from './mock/point.js';
 import {render} from './framework/render';
 import ModelOffers from './model/offer-model';
 import ModelDestinations from './model/destin-model';
-import {offersByType} from './mock/const';
-import {destinations} from './mock/destin';
 import ModelFilters from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter';
 import NewPointButtonView from './view/new-button-view.js';
+import PointsApiService from './api-service.js';
 
 const pageContainer = document.querySelector('.trip-events');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const placeForButton = document.querySelector('.trip-main');
 
-mockInit(5, 10);
+const AUTHORIZATION = 'Basic asdfasdf1121';
+const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
-const tripPointsModel = new TripPointModel(tripPoints);
-const modelOffers = new ModelOffers(offersByType);
-const modelDestinations = new ModelDestinations(destinations);
-const modelFilter = new ModelFilters();
+const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
+
+const tripPointModel = new TripPointModel({pointsApiService});
+const modelOffers = new ModelOffers({pointsApiService});
+const modelDestinations = new ModelDestinations({pointsApiService});
+const modelFilters = new ModelFilters();
 const boardPresenter = new BoardPresenter({
+
   boardContainer: pageContainer,
-  tripPointsModel: tripPointsModel,
+  tripPointsModel: tripPointModel,
   modelOffers: modelOffers,
   modelDestinations: modelDestinations,
-  modelFilter,
+  modelFilter: modelFilters,
   onNewPointDestroy: handleNewTaskFormClose
 });
 const filterPresenter = new FilterPresenter({
   filterContainer: siteFilterElement,
-  modelFilter,
-  tripPointsModel
+  modelFilter: modelFilters,
+  tripPointsModel: tripPointModel
 });
 
 const newPointButtonComponent = new NewPointButtonView({
@@ -47,8 +49,10 @@ function handleNewTaskButtonClick() {
   newPointButtonComponent.element.disabled = true;
 }
 
-render(newPointButtonComponent, placeForButton);
-
 filterPresenter.init();
-
 boardPresenter.init();
+tripPointModel.init()
+
+  .finally(() => {
+    render(newPointButtonComponent, placeForButton);
+  });

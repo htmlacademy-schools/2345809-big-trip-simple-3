@@ -1,7 +1,8 @@
 import AbstractView from '../framework/view/abstract-view';
-import {FilterType} from '../mock/const';
+import {FilterType} from '../const';
 
 const NoTasksTextType = {
+
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PAST]: 'There are no past events now',
@@ -15,6 +16,7 @@ export default class NoPointsView extends AbstractView {
   #filterType = null;
 
   constructor({filterType}) {
+
     super();
     this.#filterType = filterType;
   }

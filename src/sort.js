@@ -1,10 +1,11 @@
-import { SortType } from './const';
 import dayjs from 'dayjs';
+import {SortType} from './const';
 
 const offOptions = ['event', 'offer'];
 const isSelectedOption = (sortType) => (offOptions.includes(sortType) ? 'disabled' : '');
 
 const sorts = {
+
   [SortType.DAY]: undefined,
   [SortType.EVENT]: undefined,
   [SortType.OFFER]: undefined,
