@@ -2,6 +2,7 @@ import AbstractView from '../framework/view/abstract-view';
 import { convertToEventDateTime, convertToEventDate, convertToDateTime, convertToTime, capitalizeType, getItemFromItemsById } from '../util.js';
 
 function createOffersTemplate(offersIDs, offers, type) {
+
   const currentTypeOffers = offers.find((el) => el.type === type).offers;
   return currentTypeOffers.filter((offer) => offersIDs.includes(offer.id))
     .map((offer) => `
@@ -46,12 +47,14 @@ function createTripPointTemplate(tripPoint, destinations, offers) {
 }
 
 export default class PointView extends AbstractView {
+
   #tripPoint = null;
   #handleClick = null;
   #offers = null;
   #destinations = null;
 
   constructor({tripPoint, onClick, offers, destinations}) {
+
     super();
     this.#tripPoint = tripPoint;
     this.#handleClick = onClick;
@@ -61,6 +64,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
+
     return createTripPointTemplate(this.#tripPoint, this.#destinations, this.#offers);
   }
 

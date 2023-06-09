@@ -3,10 +3,11 @@ import PointListView from '../view/point-list-view';
 import NoPointsView from '../view/no-view';
 import {render, RenderPosition, remove} from '../framework/render';
 import PointPresenter from '../presenter/point-presenter';
-import {FilterType, SortType, UpdateType, UserAction} from '../mock/const';
-import {sorts} from '../mock/sort';
+import {FilterType, SortType, UpdateType, UserAction} from '../const';
+import {sorts} from '../sort';
 import {filter} from '../util';
 import NewPointPresenter from './new-presenter';
+import LoadingView from '../view/load-view';
 
 export default class BoardPresenter {
   #noPoints = null;
@@ -15,6 +16,7 @@ export default class BoardPresenter {
 
   #boardContainer = null;
   #tripPointsModel = null;
+
   #pointsList = new PointListView();
   #modelOffers = null;
   #modelDestinations = null;
@@ -22,8 +24,8 @@ export default class BoardPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  #offers = [];
-  #destinations = [];
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   #modelFilter = null;
   #newPointPresenter = null;
@@ -35,6 +37,7 @@ export default class BoardPresenter {
     this.#modelDestinations = modelDestinations;
     this.#modelFilter = modelFilter;
     this.#newPointPresenter = new NewPointPresenter({
+
       pointListContainer: this.#pointsList.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewPointDestroy
@@ -49,18 +52,25 @@ export default class BoardPresenter {
     const points = this.#tripPointsModel.tripPoints.sort(sorts[SortType.TIME]);
     const filteredPoints = filter[this.#filterType](points);
     return (sorts[this.#currentSortType]) ? filteredPoints.sort(sorts[this.#currentSortType]) : filteredPoints;
+
+  }
+
+  get destinations() {
+    return this.#modelDestinations.destinations;
+  }
+
+  get offers() {
+    return this.#modelOffers.offers;
   }
 
   init() {
-    this.#offers = [...this.#modelOffers.offers];
-    this.#destinations = [...this.#modelDestinations.destinations];
     this.#renderBoard();
   }
 
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#modelFilter.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(this.#destinations, this.#offers);
+    this.#newPointPresenter.init(this.destinations, this.offers);
   }
 
   #renderNoPoint() {
@@ -90,16 +100,20 @@ export default class BoardPresenter {
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       pointList: this.#pointsList.element,
-      offers: this.#offers,
-      destinations: this.#destinations,
+      offers: this.offers,
+      destinations: this.destinations,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#renderHandleModeChange,
     });
-    pointPresenter.init(point, this.#destinations, this.#offers);
+    pointPresenter.init(point, this.destinations, this.offers);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
   #renderBoard() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     const points = this.points;
     if (points.length === 0) {
       this.#renderNoPoint();
@@ -109,6 +123,10 @@ export default class BoardPresenter {
 
     render(this.#pointsList, this.#boardContainer);
     this.#renderPointsList(points);
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -137,7 +155,7 @@ export default class BoardPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data, this.#modelDestinations.destinations, this.#modelOffers.offers);
+        this.#pointPresenter.get(data.id).init(data, this.destinations, this.offers);
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
@@ -145,6 +163,11 @@ export default class BoardPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
@@ -156,6 +179,7 @@ export default class BoardPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sort);
+    remove(this.#loadingComponent);
 
     if (this.#noPoints) {
       remove(this.#noPoints);
