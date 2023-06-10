@@ -39,11 +39,11 @@ export default class BoardPresenter {
   #modelFilter = null;
   #newPointPresenter = null;
 
-  constructor({boardContainer, tripPointsModel, modelOffers, modelDestinations, modelFilter, onNewPointDestroy}) {
+  constructor({boardContainer, tripPointsModel, modelOffers, modelFilter, onNewPointDestroy}) {
     this.#boardContainer = boardContainer;
     this.#tripPointsModel = tripPointsModel;
     this.#modelOffers = modelOffers;
-    this.#modelDestinations = modelDestinations;
+
     this.#modelFilter = modelFilter;
     this.#newPointPresenter = new NewPointPresenter({
 
@@ -65,7 +65,7 @@ export default class BoardPresenter {
   }
 
   get destinations() {
-    return this.#modelDestinations.destinations;
+    return this.#tripPointsModel.destinations;
   }
 
   get offers() {

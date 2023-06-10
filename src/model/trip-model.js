@@ -3,6 +3,7 @@ import Observable from '../framework/observable';
 export default class TripPointModel extends Observable {
   #tripPoints = [];
   #pointsApiService = null;
+  #destinations = [];
   constructor ({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
@@ -12,7 +13,17 @@ export default class TripPointModel extends Observable {
     return this.#tripPoints;
   }
 
+  get destinations() {
+    return this.#destinations;
+  }
+
   async init() {
+    try {
+      const destinations = await this.#pointsApiService.destinations;
+      this.#destinations = destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
     try {
       const points = await this.#pointsApiService.points;
       this.#tripPoints = points.map(this.#adaptToClient);

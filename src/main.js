@@ -2,7 +2,6 @@ import BoardPresenter from './presenter/board-presenter.js';
 import TripPointModel from './model/trip-model.js';
 import {render} from './framework/render';
 import ModelOffers from './model/offer-model';
-import ModelDestinations from './model/destin-model';
 import ModelFilters from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter';
 import NewPointButtonView from './view/new-button-view.js';
@@ -17,16 +16,14 @@ const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const pointsApiService = new PointsApiService(END_POINT, AUTHORIZATION);
 
-const tripPointModel = new TripPointModel({pointsApiService});
 const modelOffers = new ModelOffers({pointsApiService});
-const modelDestinations = new ModelDestinations({pointsApiService});
+const tripPointModel = new TripPointModel({pointsApiService});
 const modelFilters = new ModelFilters();
 const boardPresenter = new BoardPresenter({
 
   boardContainer: pageContainer,
   tripPointsModel: tripPointModel,
   modelOffers: modelOffers,
-  modelDestinations: modelDestinations,
   modelFilter: modelFilters,
   onNewPointDestroy: handleNewTaskFormClose
 });
@@ -51,8 +48,8 @@ function handleNewTaskButtonClick() {
 
 filterPresenter.init();
 boardPresenter.init();
-tripPointModel.init()
 
+tripPointModel.init()
   .finally(() => {
     render(newPointButtonComponent, placeForButton);
   });
